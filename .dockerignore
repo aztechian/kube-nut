@@ -1,0 +1,5 @@
+/helm
+/.gitignore
+/.tool-versions
+/Dockerfile
+/docker-compose.yaml

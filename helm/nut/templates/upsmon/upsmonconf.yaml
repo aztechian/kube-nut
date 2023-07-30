@@ -1,0 +1,34 @@
+{{- if .Values.upsmon.enabled -}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "nut.fullname" . }}-upsmon
+  labels:
+    app.kubernetes.io/name: {{ include "nut.name" . }}
+    helm.sh/chart: {{ include "nut.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  upsmon.conf:
+    {{- with .Values.ups }}
+    MONITOR {{ .name }}@{{ include "nut.fullname" . }} 1 {{ .Values.upsmon.user }} {{ .Values.upsmon.password }} secondary
+    {{- end }}
+    {{- range $key, $value := .Values.upsmon.config.settings }}
+    {{ $key | upper }} {{ $value }}
+    {{- end }}
+    NOTIFYCMD {{ .Values.upsmon.config.notifycmd }}
+    {{- /* Since containers don't have `wall` cmd, we want to at least make all
+        notifications go to syslog. If the user has provided some notifymsg's will set NOTIFYTYPE to
+        SYSLOG+EXEC, otherwise just SYSLOG.
+    */}}
+    {{ range $idx, $type := .Values.upsmon.config.notifytypes }}
+    {{- if hasKey $.Values.upsmon.config.notifymsg ($type | upper) }}
+    NOTIFYTYPE {{ . | upper }} "SYSLOG+EXEC"
+    {{- else }}
+    NOTIFYTYPE {{ . | upper }} "SYSLOG"
+    {{- end }}
+    {{- end }}
+    {{ range $key, $value := .Values.upsmon.config.notifymsg }}
+    NOTIFYMSG {{ $key | upper }} {{ $value | quote }}
+    {{- end }}
+{{- end }}

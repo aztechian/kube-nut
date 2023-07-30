@@ -1,0 +1,31 @@
+# create a docker compose file with two containers named upsd and upsmon that are on the same network, using nut:dev container name
+
+version: '3.7'
+
+services:
+  upsd:
+    container_name: upsd
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nut:dev
+    command:
+      - upsd
+    ports:
+      - 3493
+    privileged: true
+    depends_on:
+      - driver
+  upsmon:
+    container_name: upsmon
+    image: nut:dev
+    command:
+      - upsmon
+    depends_on:
+      - upsd
+  driver:
+    container_name: upsdriver
+    image: nut:dev
+    command:
+      - upsdrvctl
+    privileged: true
