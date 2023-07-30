@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  release:
+  helm-lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,8 +23,10 @@ jobs:
 
       - name: Install Helm
         uses: azure/setup-helm@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run helm lint
         run: |
-          cd helm
+          cd helm/nut
           helm lint .
