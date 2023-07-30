@@ -1,6 +1,6 @@
 FROM alpine:3
 MAINTAINER Ian Martin "ian@imartin.net"
-ARG NUT_VERSION=2.8.0-r4 NUT_EXPORTER_VERSION=3.0.0
+ARG NUT_VERSION=2.8.0-r4 NUT_EXPORTER_VERSION=3.0.0 TARGETARCH
 ENV USER=nut RUNDIR=/var/run/nut ALLOW_NO_DEVICES=yes
 
 RUN apk add -Uuv nut=$NUT_VERSION libusb libusb-compat ca-certificates curl openssh-client && \
@@ -9,7 +9,7 @@ RUN apk add -Uuv nut=$NUT_VERSION libusb libusb-compat ca-certificates curl open
   echo "0" > $RUNDIR/upsmon.pid && \
   chown -R $USER $RUNDIR && \
   chmod 750 $RUNDIR && \
-  curl -sL https://github.com/DRuggeri/nut_exporter/releases/download/v$NUT_EXPORTER_VERSION/nut_exporter-v$NUT_EXPORTER_VERSION-linux-amd64 -o /usr/local/bin/nut_exporter && \
+  curl -sL https://github.com/DRuggeri/nut_exporter/releases/download/v$NUT_EXPORTER_VERSION/nut_exporter-v$NUT_EXPORTER_VERSION-linux-$TARGETARCH -o /usr/local/bin/nut_exporter && \
   chmod 755 /usr/local/bin/nut_exporter
 
 COPY config/* /etc/nut/
