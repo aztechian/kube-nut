@@ -18,3 +18,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHFMT_OPTS: "-s"
+        with:
+          sh_checker_comment: true
