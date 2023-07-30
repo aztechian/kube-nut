@@ -1,5 +1,3 @@
-# create a docker compose file with two containers named upsd and upsmon that are on the same network, using nut:dev container name
-
 version: '3.7'
 
 services:
