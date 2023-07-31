@@ -19,7 +19,7 @@ spec:
       maxUnavailable: {{ .Values.upsmon.maxUnavailable }}
     {{- end}}
   selector:
-    matchLabels: {{ include "nut.selectorLabels" . | nindent 6 }}}
+    matchLabels: {{ include "nut.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels: {{ include "nut.selectorLabels" . | nindent 8 }}
