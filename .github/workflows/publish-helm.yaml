@@ -40,7 +40,7 @@ jobs:
           aws-region: us-east-2
 
       - name: Helm release
-        uses: shellbear/helm-release-action@0.1
+        uses: shellbear/helm-release-action@v0.1
         with:
           repo: s3://repos.imartin.net/
           chart: ./helm/nut
