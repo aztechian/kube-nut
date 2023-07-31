@@ -16,6 +16,8 @@ jobs:
     # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
     permissions:
       contents: write
+      id-token: write
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,5 +42,5 @@ jobs:
       - name: Helm release
         uses: shellbear/helm-release-action@v0.1
         with:
-          repo: s3://repos.imartin.net/
+          repo: s3://repos.imartin.net/charts
           chart: ./helm/nut

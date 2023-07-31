@@ -27,7 +27,7 @@ spec:
         {{ $key }}: {{ $val | quote }}
         {{- end}}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/upsmon/upsmonconf.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/upsmon/config.yaml") . | sha256sum }}
         {{- if .Values.upsmon.podAnnotations }}
         {{- toYaml .Values.upsmon.podAnnotations | nindent 8 }}
         {{- end }}
