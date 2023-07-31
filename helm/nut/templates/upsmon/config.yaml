@@ -11,7 +11,7 @@ metadata:
 data:
   upsmon.conf:
     {{- range $ups := .Values.ups }}
-    MONITOR {{ $ups.name }}@{{ include "nut.fullname" $ }} 1 {{ .Values.upsmon.user | default "admin" }} {{ .Values.upsmon.password | default "admin" }} secondary
+    MONITOR {{ $ups.name }}@{{ include "nut.fullname" $ }} 1 {{ $.Values.upsmon.user | default "admin" }} {{ $.Values.upsmon.password | default "admin" }} secondary
     {{- end }}
     {{- range $key, $value := .Values.upsmon.config.settings }}
     {{ $key | upper }} {{ $value }}
