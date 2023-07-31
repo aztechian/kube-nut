@@ -135,6 +135,8 @@ upsmon:
     limits:
       cpu: 500m
       memory: 128Mi
+  user: ""
+  password: ""
   config:
     settings:
       DEADTIME: 90

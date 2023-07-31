@@ -1,0 +1,23 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "nut.fullname" . }}
+  labels: {{ include "nut.labels" . | nindent 4 }}
+data:
+  upsd.conf: |
+    LISTEN  0.0.0.0
+  ups.conf: |
+    {{ range $ups := .Values.ups }}
+    [{{ $ups.name }}]
+    driver = usbhid-ups
+    port = auto
+    vendorid = {{ $ups.vendorid }}
+    desc = {{ $ups.description | quote }}
+    sdorder = {{ $ups.sdorder }}
+    {{- end }}
+  upsd.users: |
+    [admin]
+    password = admin
+    actions = ALL
+    instcmds = ALL
+    upsmon master
