@@ -42,6 +42,6 @@ jobs:
       - name: Helm release
         uses: shellbear/helm-release-action@v0.1
         with:
-          repo: s3://repos.imartin.net/charts
+          repo: s3://repos.imartin.io/charts
           chart: ./helm/nut
           force: false
