@@ -44,3 +44,4 @@ jobs:
         with:
           repo: s3://repos.imartin.net/charts
           chart: ./helm/nut
+          force: false
