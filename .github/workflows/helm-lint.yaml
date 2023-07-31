@@ -4,6 +4,11 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - main
+    tags:
+      - v*
 
 # This ensures that previous jobs for the PR are canceled when the PR is
 # updated.
