@@ -7,7 +7,7 @@ data:
   upsd.conf: |
     LISTEN  0.0.0.0
   ups.conf: |
-    {{ range $ups := .Values.ups }}
+    {{- range $ups := .Values.ups }}
     [{{ $ups.name }}]
     driver = usbhid-ups
     port = auto
@@ -18,6 +18,4 @@ data:
   upsd.users: |
     [admin]
     password = admin
-    actions = ALL
-    instcmds = ALL
-    upsmon master
+    upsmon secondary
