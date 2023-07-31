@@ -35,6 +35,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["upsd"]
+          env:
+            - name: ALLOW_NO_DEVICE
+              value: "true"
           ports:
             - name: upsd
               containerPort: {{ .Values.service.port }}
@@ -53,6 +56,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["upsdrvctl"]
+          env:
+            - name: ALLOW_NO_DEVICE
+              value: "true"
           volumeMounts:
             - name: configs
               mountPath: /etc/nut/ups.conf
