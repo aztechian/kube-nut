@@ -5,7 +5,7 @@ shift
 
 case $called_as in
   upsdrvctl)
-    exec upsdrvctl -u nut -D start "$@"
+    exec upsdrvctl -u nut -D -F start "$@"
     ;;
   upsd)
     exec upsd -u nut -D "$@"
