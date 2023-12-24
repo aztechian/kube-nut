@@ -1,6 +1,6 @@
 FROM alpine:3
 MAINTAINER Ian Martin "ian@imartin.net"
-ARG NUT_VERSION=2.8.0-r4
+ARG NUT_VERSION=2.8.1-r0
 ENV USER=nut RUNDIR=/var/run/nut ALLOW_NO_DEVICES=yes
 
 RUN apk add -Uuv nut=$NUT_VERSION libusb libusb-compat ca-certificates curl openssh-client && \
