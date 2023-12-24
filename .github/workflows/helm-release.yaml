@@ -8,7 +8,6 @@ on:
     branches:
       - main
       - master
-      - wf-test
     tags:
       # could be triggered by a global release across all charts, which would be of form "v.N.N.N"
       - v*
@@ -44,7 +43,6 @@ jobs:
 
     outputs:
       changed_charts: ${{ steps.releaser.outputs.changed_charts }}
-
 
   publish:
     if: github.event.workflow_run.conclusion == 'success'
