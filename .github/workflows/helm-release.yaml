@@ -1,0 +1,56 @@
+name: Release Charts
+
+on:
+  workflow_run:
+    workflows: [Helm Chart linting]
+    types:
+      - completed
+    branches:
+      - main
+      - master
+    tags:
+      # could be triggered by a global release across all charts, which would be of form "v.N.N.N"
+      - v*
+
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success'
+    # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
+    # see: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#modifying-the-permissions-for-the-github_token
+    permissions:
+      contents: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Run chart-releaser
+        id: releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          charts_dir: helm
+          skip_existing: false # TODO: remove before merge
+
+    outputs:
+      changed_charts: ${{ steps.releaser.outputs.changed_charts }}
+
+  publish:
+    if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: write
+      id-token: write
+
+    needs: release
+    uses: aztechian/charts/.github/workflows/helm-publish.yaml@main
+    with:
+      chart_names: ${{ needs.release.outputs.changed_charts }}

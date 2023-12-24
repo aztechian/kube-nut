@@ -85,9 +85,14 @@ ups: []
 
 exporter:
   enabled: false
-  vars: []
+  image:
+    repository: ghcr.io/DRuggeri/nut-exporter
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: latest
   telemetryPath: ""
   exporterTelemetryPath: ""
+  config: {}
   service:
     enabled: true
     port: 9199
