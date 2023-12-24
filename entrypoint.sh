@@ -13,9 +13,6 @@ case $called_as in
   upsmon)
     exec upsmon -u nut -D "$@"
     ;;
-  exporter)
-    exec nut_exporter --nut.vars_enable="" --web.listen-address=":9199"
-    ;;
   list-drivers)
     exec ls -1 --color=never /usr/lib/nut
     sleep 5
