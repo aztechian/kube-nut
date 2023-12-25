@@ -6,9 +6,7 @@ metadata:
   labels:
     {{- include "nut.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "nut.selectorLabels" . | nindent 6 }}
@@ -65,6 +63,35 @@ spec:
               subPath: ups.conf
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.exporter.enabled }}
+        - name: exporter
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.exporter.service.port }}
+              protocol: TCP
+          env:
+            - name: NUT_EXPORTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nut.fullname" . }}-exporter
+                  key: password
+          args:
+            - --nut.serverport={{ .Values.service.port }}
+            - --nut.username=admin
+            {{- if .Values.exporter.telemetryPath }}
+            - --web.telemetry-path={{ .Values.exporter.telemetryPath }}
+            {{- end }}
+            {{- if .Values.exporter.exporterTelemetryPath }}
+            - --web.exporter-telemetry-path={{ .Values.exporter.exporterTelemetryPath }}
+            {{- end }}
+            {{- range $k, $v := .Values.exporter.config }}
+            - --{{ $k }}{{ if $v }}={{ end }}{{ $v }}
+            {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -1,4 +1,4 @@
-{{- if .Values.exporter.enabled -}}
+{{- if and .Values.ups .Values.exporter.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,9 +9,9 @@ spec:
   type: {{ .Values.exporter.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: nutexporter
+      targetPort: exporter
       protocol: TCP
-      name: nutexporter
+      name: exporter
   selector:
     {{- include "nut.selectorLabels" . | nindent 4 }}
 {{- end }}

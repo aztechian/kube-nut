@@ -7,13 +7,13 @@ data:
   upsd.conf: |
     LISTEN  0.0.0.0
   ups.conf: |
-    {{- range $ups := .Values.ups }}
-    [{{ $ups.name }}]
-    driver = usbhid-ups
-    port = auto
-    vendorid = {{ $ups.vendorid }}
-    desc = {{ $ups.description | quote }}
-    sdorder = {{ $ups.sdorder }}
+    {{- range .Values.ups }}
+    [{{ .name }}]
+    driver = {{ .driver | default "usbhid-ups" }}
+    port = {{ .port | default "auto" }}
+    vendorid = {{ .vendorid }}
+    desc = {{ .description | quote }}
+    sdorder = {{ .sdorder | default 1 }}
     {{- end }}
   upsd.users: |
     [admin]

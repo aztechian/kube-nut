@@ -1,4 +1,4 @@
-{{- if .Values.exporter.ingress.enabled -}}
+{{- if and .Values.ups .Values.exporter.ingress.enabled -}}
 {{- $fullName := printf "%s-%s" (include "nut.fullname" .) "exporter" -}}
 {{- $svcPort := .Values.exporter.service.port -}}
 {{- if and .Values.exporter.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
