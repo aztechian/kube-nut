@@ -1,4 +1,6 @@
 {{- if .Values.ups }}
+{{- $isDummy := eq ((index .Values.ups 0).driver) "dummy-ups" -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,9 +8,7 @@ metadata:
   labels:
     {{- include "nut.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  {{- end }}
   selector:
     matchLabels:
       {{- include "nut.selectorLabels" . | nindent 6 }}
@@ -35,6 +35,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["upsd"]
+          env:
+            - name: ALLOW_NO_DEVICE
+              value: "true"
           ports:
             - name: upsd
               containerPort: {{ .Values.service.port }}
@@ -42,6 +45,9 @@ spec:
           readinessProbe:
             tcpSocket:
               port: upsd
+          volumeMounts:
+            - name: configs
+              mountPath: /etc/nut
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: upsdrvctl
@@ -50,8 +56,49 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["upsdrvctl"]
+          env:
+            - name: ALLOW_NO_DEVICE
+              value: "true"
+          volumeMounts:
+            - name: configs
+              mountPath: /etc/nut/ups.conf
+              subPath: ups.conf
+            {{- if $isDummy }}
+            - name: configs
+              mountPath: /etc/nut/auto
+              subPath: dummy.seq
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.exporter.enabled }}
+        - name: exporter
+          image: "{{ .Values.exporter.image.repository }}:{{ .Values.exporter.image.tag }}"
+          imagePullPolicy: {{ .Values.exporter.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.exporter.service.port }}
+              protocol: TCP
+          env:
+            - name: NUT_EXPORTER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nut.fullname" . }}-exporter
+                  key: password
+          args:
+            - --nut.serverport={{ .Values.service.port }}
+            - --nut.username=admin
+            {{- if .Values.exporter.telemetryPath }}
+            - --web.telemetry-path={{ .Values.exporter.telemetryPath }}
+            {{- end }}
+            {{- if .Values.exporter.exporterTelemetryPath }}
+            - --web.exporter-telemetry-path={{ .Values.exporter.exporterTelemetryPath }}
+            {{- end }}
+            {{- range $k, $v := .Values.exporter.config }}
+            - --{{ $k }}{{ if $v }}={{ end }}{{ $v }}
+            {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -64,4 +111,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      volumes:
+        - name: configs
+          configMap:
+            name: {{ include "nut.fullname" . }}
 {{- end }}

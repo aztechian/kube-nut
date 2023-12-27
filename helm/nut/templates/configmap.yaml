@@ -1,3 +1,8 @@
+{{- $isDummy := false -}}
+{{- if .Values.ups }}
+{{- $isDummy = eq ((index .Values.ups 0).driver) "dummy-ups" -}}
+{{- end }}
+
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -7,15 +12,19 @@ data:
   upsd.conf: |
     LISTEN  0.0.0.0
   ups.conf: |
-    {{- range $ups := .Values.ups }}
-    [{{ $ups.name }}]
-    driver = usbhid-ups
-    port = auto
-    vendorid = {{ $ups.vendorid }}
-    desc = {{ $ups.description | quote }}
-    sdorder = {{ $ups.sdorder }}
+    {{- range .Values.ups }}
+    [{{ .name }}]
+    driver = {{ .driver | default "usbhid-ups" }}
+    port = {{ .port | default "auto" }}
+    vendorid = {{ .vendorid }}
+    desc = {{ .description | quote }}
+    sdorder = {{ .sdorder | default 1 }}
     {{- end }}
   upsd.users: |
     [admin]
     password = admin
-    upsmon secondary
+    upsmon secondary  
+  {{- if $isDummy }}
+  dummy.seq: |
+    {{- .Files.Get "examples/dummy.seq" | nindent 4 }}
+  {{- end }}

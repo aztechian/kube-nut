@@ -1,0 +1,45 @@
+battery.charge: 100
+battery.charge.low: 10
+battery.charge.warning: 50
+battery.date: 2001/09/25
+battery.mfr.date: 2018/06/05
+battery.runtime: 1254
+battery.runtime.low: 300
+battery.type: PbAc
+battery.voltage: 27.3
+battery.voltage.nominal: 24.0
+device.mfr: American Power Conversion
+device.model: Back-UPS NS 1500M2
+device.serial: 3B12198X21000
+device.type: ups
+input.sensitivity: medium
+input.transfer.high: 142
+input.transfer.low: 88
+input.transfer.reason: input voltage out of range
+input.voltage: 118.0
+input.voltage.nominal: 120
+ups.beeper.status: enabled
+ups.delay.shutdown: 20
+ups.firmware: 957.e3 .D
+ups.firmware.aux: e3     
+ups.load: 25
+ups.mfr: American Power Conversion
+ups.mfr.date: 2018/06/05
+ups.model: Back-UPS NS 1500M2
+ups.productid: 0002
+ups.realpower.nominal: 900
+ups.serial: 3B12198X21000
+ups.status: OL
+ups.test.result: No test initiated
+ups.timer.reboot: 0
+ups.timer.shutdown: -1
+ups.vendorid: 051d
+TIMER 30
+battery.charge: 92
+TIMER 90
+battery.charge: 90
+ups.load: 30
+TIMER 90
+battery.charge: 80
+ups.load: 31
+TIMER 90

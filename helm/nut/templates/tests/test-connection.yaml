@@ -9,9 +9,11 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "nut.fullname" . }}:{{ .Values.service.port }}']
+    - name: upsc-test
+      image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+      command: ['upsc']
+      args:
+        - L
+        - {{ include "nut.fullname" . }}:{{ .Values.service.port }}
   restartPolicy: Never
 {{- end }}
