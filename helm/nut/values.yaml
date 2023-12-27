@@ -47,7 +47,6 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   host: "ups.svc.local"
-  tls: []
   path: "/"
   pathType: ImplementationSpecific
   additionalHosts: []
@@ -79,7 +78,7 @@ ups: []
 exporter:
   enabled: false
   image:
-    repository: ghcr.io/DRuggeri/nut-exporter
+    repository: ghcr.io/druggeri/nut-exporter
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: latest

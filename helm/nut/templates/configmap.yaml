@@ -1,3 +1,8 @@
+{{- $isDummy := false -}}
+{{- if .Values.ups }}
+{{- $isDummy = eq ((index .Values.ups 0).driver) "dummy-ups" -}}
+{{- end }}
+
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -18,4 +23,8 @@ data:
   upsd.users: |
     [admin]
     password = admin
-    upsmon secondary
+    upsmon secondary  
+  {{- if $isDummy }}
+  dummy.seq: |
+    {{- .Files.Get "examples/dummy.seq" | nindent 4 }}
+  {{- end }}
