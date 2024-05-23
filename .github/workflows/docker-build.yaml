@@ -2,6 +2,13 @@
 name: Docker Build
 
 on:
+  workflow_call:
+    inputs:
+      platforms:
+        type: string
+        description: A comma separated list of platforms to "go build" with
+        default: linux/amd64,linux/arm64
+        required: false
   pull_request:
     branches:
       - main
@@ -38,24 +45,24 @@ jobs:
         if: github.ref != 'refs/heads/main'
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           push: false
-          tags: aztechian/nut:${{ github.event.pull_request.head.ref }}
+          tags: ${{ github.event.repository.name }}:${{ github.event.pull_request.head.ref }}
 
       - name: Build and push latest
         uses: docker/build-push-action@v5
         if: github.ref == 'refs/heads/main'
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           push: true
-          tags: aztechian/nut:latest
+          tags: ${{ github.event.repository.name }}:latest
 
       - name: Build and push tagged version
         uses: docker/build-push-action@v5
         if: startsWith(github.event.ref, 'refs/tags/v')
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ inputs.platforms }}
           push: true
-          tags: aztechian/nut:${{ github.ref_name }}
+          tags: ${{ github.event.repository.name }}:${{ github.ref_name }}
