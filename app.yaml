@@ -1,0 +1,32 @@
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: nut
+  namespace: argocd
+spec:
+  destination:
+    namespace: network-ups-tools
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: helm/nut
+    repoURL: git@github.com:aztechian/kube-nut.git
+    targetRevision: chart_fixing
+    helm:
+      parameters:
+        - name: upsmon.enabled
+          value: "true"
+        - name: export.enabled
+          value: "true"
+        - name: image.tag
+          value: chart_fixing
+      values: |
+        ups:
+          - name: servers
+            description: "APC ups for server load"
+            vendorid: "051d"
+            sdorder: 0
+          - name: networks
+            description: "CyberPower ups for network load"
+            vendorid: "0764"
+            sdorder: 1

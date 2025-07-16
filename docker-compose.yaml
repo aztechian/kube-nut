@@ -36,4 +36,8 @@ services:
     image: nut:dev
     command:
       - upsdrvctl
-    privileged: true
+    devices:
+      - /dev/bus/usb
+    cap_add:
+      - SYS_ADMIN
+      - MKNOD

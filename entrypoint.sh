@@ -3,9 +3,16 @@
 called_as=$1
 shift
 
+# setup for upsdrvctl and upsd. They expect a pid file in /var/run/nut and access
+mkdir -p $RUNDIR
+chown -R $USER $RUNDIR
+chmod 750 $RUNDIR
+echo "0" > $RUNDIR/upsd.pid
+echo "0" > $RUNDIR/upsmon.pid
+
 case $called_as in
   upsdrvctl)
-    exec upsdrvctl -u nut -D start "$@"
+    exec upsdrvctl -u root -D start "$@"
     ;;
   upsd)
     exec upsd -u nut -D "$@"

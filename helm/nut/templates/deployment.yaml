@@ -52,13 +52,14 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: upsdrvctl
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - MKNOD
+            runAsUser: 0
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["upsdrvctl"]
-          env:
-            - name: ALLOW_NO_DEVICE
-              value: "true"
           volumeMounts:
             - name: configs
               mountPath: /etc/nut/ups.conf
